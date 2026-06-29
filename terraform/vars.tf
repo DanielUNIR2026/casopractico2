@@ -1,9 +1,9 @@
 variable "resource_group_name" {
-  default = "rg-createdbyTF"
+  default = "rg-desarrolloTF"
 }
 
 variable "location_name" {
-  default = "uksouth"
+  default = "spaincentral"
 }
 
 variable "network_name" {
