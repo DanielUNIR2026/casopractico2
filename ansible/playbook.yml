@@ -1,0 +1,13 @@
+---
+# Play para lanzar un contenedor con podman
+- hosts: localhost
+  tasks:
+    - name: Lanzar contenedor
+      collections:
+        - containers.podman
+      containers.podman.podman_container:
+        name: cp2-test
+        image: acr.azurecr.io/cp2-test:casopractico2
+        state: started
+        env:
+          POD_ID: vm-podman
