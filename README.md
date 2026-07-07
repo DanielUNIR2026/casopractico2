@@ -6,6 +6,11 @@ Tengo un git ignore que añadí para evitar que se me cuelen los archivos de ter
 
 ## 29/06/26
 Añado un proyecto de buscaminas en Javascript para formar la versión de la imagen de Podman
+
+## 07/07/26
+Recreo la estructura del proyecto, con las carpetas necesarias, para el contenedor, la infra y la automatización de despligue de las 2 aplicaciones
+Merge realizado el mismo día, de rama desarrollo a rama master
+
 ## 11/07/26
 Se consifue hacer un terraform plan -out  
 Con un error en la admin password  
@@ -73,3 +78,4 @@ terraform apply -auto-approve
 │ 
 │ 
 ```
+
