@@ -1,13 +1,12 @@
 ---
-# Play para lanzar un contenedor con podman
-- hosts: localhost
+- hosts: all
   tasks:
-    - name: Lanzar contenedor
+  #- name: sacar las credenciales del suscription ID de Azure
+  - name: Montar la imagen appVM con Podman 
       collections:
         - containers.podman
-      containers.podman.podman_container:
-        name: cp2-test
-        image: acr.azurecr.io/cp2-test:casopractico2
-        state: started
-        env:
-          POD_ID: vm-podman
+      containers.podman.podman_image:
+        name: "appVM"
+        path: "/app-vm/Containerfile"
+        build:
+    

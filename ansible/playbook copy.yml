@@ -1,0 +1,36 @@
+---
+# Play para lanzar un contenedor con podman
+- hosts: localhost, webserver
+  tasks:
+    - name: Login to Azure Container Registry
+      collections:
+        - containers.podman
+      containers.podman.podman_login:
+        registry: acr.azurecr.io
+        username: "{{ azure_registry_user }}"
+        password: "{{ azure_registry_password }}"
+
+    - name: Build container image with Podman
+      collections:
+        - containers.podman
+      containers.podman.podman_image:
+        name: "{{ image_name }}"
+        build:
+          path: "{{ playbook_dir }}"
+        state: present
+
+    - name: Push image to Azure Container Registry
+      collections:
+        - containers.podman
+      containers.podman.podman_image:
+        name: "{{ image_name }}"
+        push: yes
+
+    - name: Launch container
+      collections:
+        - containers.podman
+      containers.podman.podman_container:
+        name: "{{ container_name }}"
+        image: "{{ image_name }}"
+        state: started
+        env: "{{ container_env }}"
