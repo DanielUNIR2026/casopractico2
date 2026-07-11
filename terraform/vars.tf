@@ -1,3 +1,7 @@
+variable "subscription_id" {
+  type    = string
+  default = null
+}
 variable "resource_group_name" {
   default = "rg-desarrolloTF"
 }
@@ -12,4 +16,13 @@ variable "network_name" {
 
 variable "subnet_name" {
   default = "subnet1"
+}
+
+variable "admin_password" {
+  type      = string
+  sensitive = true
+  default   = ""  # Set via terraform apply prompt
+}
+variable "nombreACR"{
+  default = "cp2uniracr2026" 
 }

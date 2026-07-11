@@ -1,5 +1,9 @@
 ---
-- hosts: all
+- name: Preparar entorno para Terraform y Azure CLI
+  hosts: all
+  become: yes
+  vars:
+    terraform_tfvars_path: "{{ playbook_dir }}/../terraform/terraform.tfvars"
   tasks:
   #- name: sacar las credenciales del suscription ID de Azure
   - name: Montar la imagen appVM con Podman 
