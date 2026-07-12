@@ -21,7 +21,7 @@ variable "subnet_name" {
 variable "admin_password" {
   type      = string
   sensitive = true
-  default   = "1234"  # Set via terraform apply prompt
+  default   = "CasoPractico_2"  # Set via terraform apply prompt
 }
 variable "nombreACR"{
   default = "cp2uniracr2026" 

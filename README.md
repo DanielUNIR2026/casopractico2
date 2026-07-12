@@ -25,4 +25,51 @@ Con un error en la admin password
 │   on main.tf line 121, in resource "azurerm_linux_virtual_machine" "vm":
 │  121:   admin_password      = var.admin_password
 │
+
+
+cd /ruta/a/terraform
+
+# Inicializar
+terraform init
+
+# Verificar el plan (sin aplicar)
+terraform plan -out=deployment.tf
+
+# Ejecutar y pedirá password
+terraform apply -auto-approve
+# O en modo interactivo:
+# terraform apply
+
+# Cuando pida el password:
+# Enter a value for var.admin_password: [tu_password_seguro]
+```
+
+```
+╷
+│ Error: `allocation_method` must be set to `Static` when `sku` is set to `Standard` or `StandardV2`
+│ 
+│   with azurerm_public_ip.pip,
+│   on main.tf line 98, in resource "azurerm_public_ip" "pip":
+│   98: resource "azurerm_public_ip" "pip" {
+│ 
+╵
+╷
+│ Error: creating Linux Virtual Machine (Subscription: "bf46e4a1-0d08-4a90-adde-8e112905c05e"
+│ Resource Group Name: "rg-desarrolloTF"
+│ Virtual Machine Name: "vm1"): performing CreateOrUpdate: unexpected status 404 (404 Not Found) with error: PlatformImageNotFound: The platform image 'OpenLogic:Debian:11:latest' is not available. Verify that all fields in the storage profile are correct. For more details about storage profile information, please refer to https://aka.ms/storageprofile
+│ 
+│   with azurerm_linux_virtual_machine.vm,
+│   on main.tf line 115, in resource "azurerm_linux_virtual_machine" "vm":
+│  115: resource "azurerm_linux_virtual_machine" "vm" {
+│ 
+```
+### destroy test
+
+```
+╷
+│ Error: deleting Network Interface (Subscription: "bf46e4a1-0d08-4a90-adde-8e112905c05e"
+│ Resource Group Name: "rg-desarrolloTF"
+│ Network Interface Name: "vnic"): performing Delete: unexpected status 400 (400 Bad Request) with error: NicReservedForAnotherVm: Nic(s) in request is reserved for another Virtual Machine for 180 seconds. Please provide another nic(s) or retry after 180 seconds. Reserved VM: /subscriptions/bf46e4a1-0d08-4a90-adde-8e112905c05e/resourceGroups/rg-desarrolloTF/providers/Microsoft.Compute/virtualMachines/vm1
+│ 
+│ 
 ```
