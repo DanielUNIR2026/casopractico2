@@ -1,2 +1,5 @@
 terraform/.terraform.lock.hcl
 terraform/.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+plan-casopractico2.prompt.md
