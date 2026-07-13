@@ -3,7 +3,7 @@ variable "subscription_id" {
   default = null
 }
 variable "resource_group_name" {
-  default = "rg-desarrolloTF"
+  default = "casopractico2"
 }
 
 variable "location_name" {

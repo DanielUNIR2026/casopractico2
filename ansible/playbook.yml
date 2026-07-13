@@ -20,7 +20,7 @@
         chdir: "{{ terraform_dir }}"
 
     - name: Terraform plan
-      command: terraform plan -out=tfplan
+      command: terraform plan
       args:
         chdir: "{{ terraform_dir }}"
       environment:
