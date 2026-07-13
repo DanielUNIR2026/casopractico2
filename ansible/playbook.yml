@@ -1,16 +1,96 @@
 ---
-- name: Preparar entorno para Terraform y Azure CLI
-  hosts: all
-  become: yes
+- name: Terraform deploy
+  hosts: localhost
+  gather_facts: false
+
   vars:
-    terraform_tfvars_path: "{{ playbook_dir }}/../terraform/terraform.tfvars"
+    terraform_dir: "{{ playbook_dir }}/terraform"
+
   tasks:
-  #- name: sacar las credenciales del suscription ID de Azure
-  - name: Montar la imagen appVM con Podman 
-      collections:
-        - containers.podman
-      containers.podman.podman_image:
-        name: "appVM"
-        path: "/app-vm/Containerfile"
-        build:
-    
+
+    - name: Mostrar variables recibidas
+      debug:
+        msg:
+          - "subscription_id={{ subscription_id }}"
+          - "ansible_user={{ ansible_user }}"
+
+    - name: Terraform init
+      command: terraform init
+      args:
+        chdir: "{{ terraform_dir }}"
+
+    - name: Terraform plan
+      command: terraform plan -out=tfplan
+      args:
+        chdir: "{{ terraform_dir }}"
+      environment:
+        ARM_SUBSCRIPTION_ID: "{{ subscription_id }}"
+
+    - name: Terraform apply
+      command: terraform apply -auto-approve tfplan
+      args:
+        chdir: "{{ terraform_dir }}"
+      environment:
+        ARM_SUBSCRIPTION_ID: "{{ subscription_id }}"
+
+    - name: Obtener outputs Terraform
+      command: terraform output -json
+      args:
+        chdir: "{{ terraform_dir }}"
+      register: terraform_outputs
+
+    - name: Convertir outputs a variables
+      set_fact:
+        tf: "{{ terraform_outputs.stdout | from_json }}"
+
+    - name: Guardar variables Terraform
+      set_fact:
+        resource_group_id: "{{ tf.resource_group_id.value }}"
+        resource_group_name: "{{ tf.resource_group_name.value }}"
+        acr_name: "{{ tf.acr_name.value }}"
+        acr_login_server: "{{ tf.acr_login_server.value }}"
+        vm_id: "{{ tf.vm_id.value }}"
+        virtual_machine_name: "{{ tf.virtual_machine_name.value }}"
+        public_ip_address: "{{ tf.public_ip_address.value }}"
+
+    - name: Mostrar outputs
+      debug:
+        msg:
+          - "resource_group_name={{ resource_group_name }}"
+          - "acr_name={{ acr_name }}"
+          - "acr_login_server={{ acr_login_server }}"
+          - "vm_name={{ virtual_machine_name }}"
+          - "public_ip={{ public_ip_address }}"
+
+    - name: Instalar colección Azure
+      command: >
+        ansible-galaxy collection install azure.azcollection --force
+
+    - name: Instalar colección community general
+      command: >
+        ansible-galaxy collection install community.general --force
+
+    - name: Añadir VM al inventario dinámico
+      add_host:
+        name: azurevm
+        groups: azure_vms
+        ansible_host: "{{ public_ip_address }}"
+        ansible_user: "{{ ansible_user }}"
+        ansible_python_interpreter: /usr/bin/python3
+
+- name: Configurar VM Debian
+  hosts: azure_vms
+  become: true
+  gather_facts: true
+
+  tasks:
+
+    - name: Comprobar conectividad
+      ping:
+
+    - name: Mostrar versión Debian
+      debug:
+        msg: "{{ ansible_distribution }} {{ ansible_distribution_version }}"
+
+    - name: Ejecutar playbook secundario
+      import_tasks: playbook_copy.yml
